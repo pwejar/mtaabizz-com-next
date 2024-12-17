@@ -1,7 +1,7 @@
 import React from 'react'
 
-export default function page(props: { params: {storeID: string}}) {
-  const {storeID} = props.params
+export default async function page({params,}:{ params: {storeID: string}}) {
+  const {storeID} = await params
   return (
     <div>page {storeID}</div>
   )
