@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import localFont from "next/font/local";
 import Image from "next/image";
+import Stores from "./components/Stores";
 
 const chicleFont = localFont({
   src: "./fonts/Chicle-Regular.ttf",
@@ -17,11 +18,21 @@ export default function Home() {
     <div className={`background p-2 md:p-4 ${gabaritoFont.className}`}>
       <div className="relative">
         <div className="w-full">
-          <div className="bg-lime-50 shadow-sm">
-            <div className="md:flex justify-center p-8">
+          <div className="bg-slate-50 shadow-sm">
+            <div className="justify-items-end w-full p-4">
+              <div className="breadcrumbs text-lg p-2 hidden md:block ">
+                <ul>
+                  <li>Home</li>
+                  <li><a target="blank" href="https://mtaabizz.com/business">Businesses</a></li>
+                  <li><a>Events & Tickets</a></li>
+                  <li>Products</li>
+                </ul>
+              </div>
+            </div>
+            <div className="sm:flex justify-center p-8">
               <div className=" images md:p-8 flex-wrap flex justify-center">
                 <img
-                  className="m-1 max-w-96 dark:invert"
+                  className="m-1 w-3/4 dark:invert"
                   src="/mtaabizz bronchure.png"
                   alt="Next.js logo"
                 />
@@ -33,7 +44,7 @@ export default function Home() {
                       className="md:mx-auto dark:invert"
                       src="/mtaabizz icon.svg"
                       alt="mtaabizz logo"
-                      width={70}
+                      width={80}
                       height={28}
                       priority
                     />
@@ -75,13 +86,13 @@ export default function Home() {
               </div>
             </div>
           </div>
-          <div className="bg-pwejar py-14">
+          <div className="bg-slate-900 py-14">
               <div className="items-center justify-items-center">
-                <h1 className={`p-8 text-4xl ${chicleFont.className} text-lightBackground`}>🚀 Businesses enjoying our services ☺️  </h1>
+                <h1 className={`p-8 text-4xl ${chicleFont.className} text-slate-100`}>🚀 Businesses enjoying our services ☺️  </h1>
               </div>
-              
+              <Stores></Stores>
               <div className="items-center justify-items-center">
-                <a href="https://mtaabizz.com/businesses" target="blank" className={`p-8 ${chicleFont.className} text-lightBackground`}>See more... </a>
+                powered by pwejar 
               </div>
             </div>
         </div>
