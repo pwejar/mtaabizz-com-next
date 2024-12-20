@@ -3,36 +3,75 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+	--background: #ffffff;
+	--foreground: #171717;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+	:root {
+		--background: #0a0a0a;
+		--foreground: #ededed;
+	}
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+	color: var(--foreground);
+	background: var(--background);
+	font-family: Arial, Helvetica, sans-serif;
 }
-.background{
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  text-align: center;
-  background-image: url("/cool-background.svg"); 
-  background-repeat: no-repeat; 
-  background-position: center;
-  background-size: cover;
-  overflow-y: scroll;
+.background {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 100vh;
+	text-align: center;
+	background-image: url("/cool-background.svg");
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: cover;
+	overflow-y: scroll;
 }
-.scrollContainer{
-  position: relative;
+.scrollContainer {
+	position: relative;
+}
+.imageMaxCenter {
+	position: absolute;
+	min-height: 100%;
+	min-width: 100%;
+	height: auto;
+	width: auto;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.ribbon-2 {
+	--f: 5px; /* control the folded part*/
+	--r: 15px; /* control the ribbon shape */
+	--t: 80%; /* the top offset */
+
+	position: absolute;
+	inset: var(--t) calc(-1 * var(--f)) auto auto;
+	padding: 0 10px var(--f) calc(10px + var(--r));
+	clip-path: polygon(
+		0 0,
+		100% 0,
+		100% calc(100% - var(--f)),
+		calc(100% - var(--f)) 100%,
+		calc(100% - var(--f)) calc(100% - var(--f)),
+		0 calc(100% - var(--f)),
+		var(--r) calc(50% - var(--f) / 2)
+	);
+	box-shadow: 0 calc(-1 * var(--f)) 0 inset #0005;
+}
+.translucent{
+  background: linear-gradient(to top, rgba(255, 255, 255, 0), #3e2d44);
+}
+.pwejar{
+  background-color: #3e2d44;
+}
+.textExtraSmall{
+  font-size: 0.7rem;
 }
