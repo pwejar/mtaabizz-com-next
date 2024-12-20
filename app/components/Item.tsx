@@ -15,7 +15,7 @@ const withImage = (item: Item) => {
 				alt="Shoes"
 			/>
 			<div className="absolute w-full top-0 translucent ">
-				<p className="textExtraSmall text-yellow-500 opacity-100 pb-4">
+				<p className="textExtraSmall text-yellow-300 opacity-100 pb-4 [text-shadow:_0px_-1px_1px_#000000]">
 					{item.name.length > 16
 						? `${item.name.substring(0, 16)}...`
 						: item.name}
