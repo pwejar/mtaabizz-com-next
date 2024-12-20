@@ -15,7 +15,7 @@ const gabaritoFont = localFont({
 
 export default function Home() {
 	return (
-		<div className={`background p-2 md:p-4 ${gabaritoFont.className}`}>
+		<div className={`background ms:p-2 md:p-4 ${gabaritoFont.className}`}>
 			<div className="relative">
 				<div className="w-full">
 					<div className="bg-white shadow-sm">

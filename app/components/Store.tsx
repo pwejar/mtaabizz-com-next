@@ -13,6 +13,7 @@ import {
 } from "firebase/firestore";
 import db from "../firebase/clientApp";
 import ItemComponent from "./Item";
+import Link from "next/link";
 
 export default async function StoreComponent(props: { store: Store }) {
 	const { store } = props;
@@ -60,7 +61,7 @@ export default async function StoreComponent(props: { store: Store }) {
 
 	await loadItems(store);
 	return (
-		<div className="p-4 ">
+		<Link href={`/${store.userName}`} className="p-4 ">
 			<div className="rounded h-full bg-white  ">
 				<div className="flex items-center p-1">
 					<Image
@@ -73,7 +74,6 @@ export default async function StoreComponent(props: { store: Store }) {
 					/>
 					<div className="p-1 text-pwejar justify-items-center m-auto">
 						<strong>{store.name}</strong>
-						{/* <span>Type: </span> */}
 					</div>
 				</div>
 				<div className="grid grid-cols-3">
@@ -82,6 +82,6 @@ export default async function StoreComponent(props: { store: Store }) {
 					})}
 				</div>
 			</div>
-		</div>
+		</Link>
 	);
 }
