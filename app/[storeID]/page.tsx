@@ -25,42 +25,51 @@ export default async function page(props: { params: Params }) {
 		<div className={`background ms:p-2 md:p-4 ${gabaritoFont.className}`}>
 			<div className="relative">
 				<div className="w-full">
-					<header className="navbar bg-base-100">
-						<div className="flex-1">
-							<img
-								src={
-									store.logo
-										? store.logo.small
-										: "/mtaabizz_icon_monochrome.svg"
-								}
-								className="max-h-8"
-								alt="Store Lofo"
-							/>
-							<p className="p-2">{storeID}</p>
-							<SearchBar></SearchBar>
-						</div>
+					<header className="">
+						<div className="navbar bg-base-100">
+							<div className="flex-1">
+								<img
+									src={
+										store.logo
+											? store.logo.small
+											: "/mtaabizz_icon_monochrome.svg"
+									}
+									className="max-h-8"
+									alt="Store Lofo"
+								/>
+								<p className=" px-4">{store.name}</p>
+								<SearchBar></SearchBar>
+							</div>
 
-						<div className="flex-none">
-							<ul className="menu menu-horizontal px-1">
-								<li>
-									<a>Link</a>
-								</li>
-								<li>
-									<details>
-										<summary>Parent</summary>
-										<ul className="bg-base-100 rounded-t-none p-2">
-											<li>
-												<a>Link 1</a>
-											</li>
-											<li>
-												<a>Link 2</a>
-											</li>
-										</ul>
-									</details>
-								</li>
-							</ul>
+							<div className="flex-none">
+								<ul className="menu menu-horizontal px-1">
+									<li>
+										<a>Link</a>
+									</li>
+									<li>
+										<details>
+											<summary>Parent</summary>
+											<ul className="bg-base-100 rounded-t-none p-2">
+												<li>
+													<a>Link 1</a>
+												</li>
+												<li>
+													<a>Link 2</a>
+												</li>
+											</ul>
+										</details>
+									</li>
+								</ul>
+							</div>
+						</div>
+						<div className="pwejar w-full p-3 text-center text-slate-300">
+							<h1>Welcome to {store.name} online 🤗</h1>
 						</div>
 					</header>
+					<main>
+						<div className="sideBar"></div>
+						<div className="mainContent"></div>
+					</main>
 				</div>
 			</div>
 		</div>

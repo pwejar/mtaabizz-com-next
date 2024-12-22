@@ -1,6 +1,6 @@
 "use client";
 export default function SearchBar() {
-	const inputValue: string = "test";
+	// const inputValue: string = "test";
 	const handleSearch = () => {
 		console.log("runing");
 	};
@@ -15,11 +15,10 @@ export default function SearchBar() {
 			<input
 				type="text"
 				id="inputId"
-				placeholder="Enter your keywords"
-				value={inputValue ?? ""}
+				placeholder="Search Item"
 				onChange={handleChange}
 				onKeyDown={handleKeyPress}
-				className="bg-[transparent] outline-none border-none w-full py-3 pl-2 pr-3"
+				className="bg-[transparent] rounded shadow-[0px_4px_6px_0px_rgba(0,_0,_0,_0.1)] focus:outline-none focus:shadow-[1px_4px_5px_4px_rgba(0,_128,_0,_0.1)] w-full p-1"
 			/>
 		</div>
 	);
