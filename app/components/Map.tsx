@@ -34,7 +34,7 @@ export default function MapComponent(props: { store: Store }) {
 								alt="store logo"
 								className="max-w-6 max-h-6 m-auto"
 							/>
-							<div className="triangle p-1 text-white justify-items-center m-auto">
+							<div className="triangle p-1 text-yellow-500 justify-items-center m-auto">
 								<strong>{store.name}</strong>
 							</div>
 						</div>
