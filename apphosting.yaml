@@ -15,3 +15,5 @@ env:
     secret: firebase-next-app-id
   - variable: NEXT_PUBLIC_FIRE_NEXT_MEASUREMENT_ID
     secret: firebase-measurement-id
+  - variable: NEXT_PUBLIC_GOOGLE_MAPS
+    secret: map-api-key
