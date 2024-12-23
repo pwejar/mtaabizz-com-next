@@ -6,6 +6,8 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import db from "../firebase/clientApp";
 import SearchBar from "../components/SearchBar";
 import MapComponent from "../components/Map";
+import FolderComponent from "../components/Folder";
+
 type Params = Promise<{ storeID: string }>;
 const gabaritoFont = localFont({
 	src: "../fonts/Gabarito-VariableFont_wght.ttf",
@@ -21,7 +23,6 @@ export default async function page(props: { params: Params }) {
 		id: doc.id,
 	}));
 	const store = stores[0];
-
 	return (
 		<div className={`background ms:p-2 md:p-4 ${gabaritoFont.className}`}>
 			<div className="relative">
@@ -70,7 +71,7 @@ export default async function page(props: { params: Params }) {
 							</h1>
 						</div>
 					</header>
-					<main className="sm:grid sm:grid-cols-[25%_75%] ">
+					<main className="sm:grid sm:grid-cols-[25%_75%] bg-slate-300 min-h-screen">
 						<div className="">
 							<div className="mapHolder">
 								{store.contacts.position && (
@@ -78,7 +79,21 @@ export default async function page(props: { params: Params }) {
 								)}
 							</div>
 						</div>
-						<div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6"></div>
+						<div>
+							{/* <div className="w-full">
+								<p>Featured Items</p>
+							</div>
+							<div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 p-4">
+								{store.folders?.map((folder, index) => {
+									return <FolderComponent key={index} folder={folder} />;
+								})}
+							</div> */}
+							<div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 p-4">
+								{store.folders?.map((folder, index) => {
+									return <FolderComponent key={index} folder={folder} />;
+								})}
+							</div>
+						</div>
 					</main>
 				</div>
 			</div>
