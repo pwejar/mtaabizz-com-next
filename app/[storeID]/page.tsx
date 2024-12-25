@@ -13,6 +13,20 @@ const gabaritoFont = localFont({
 	src: "../fonts/Gabarito-VariableFont_wght.ttf",
 	variable: "--font-geist-mono",
 });
+export async function generateMetadata(props: { params: Params }) {
+	const { storeID } = await props.params;
+	const querySnapshot = await getDocs(
+		query(collection(db, "stores"), where("userName", "==", storeID))
+	);
+	const stores = querySnapshot.docs.map((doc) => ({
+		...(doc.data() as Store),
+		id: doc.id,
+	}));
+	const store = stores[0];
+	return {
+		title: store.name + " | online store",
+	};
+}
 export default async function page(props: { params: Params }) {
 	const { storeID } = await props.params;
 	const querySnapshot = await getDocs(
