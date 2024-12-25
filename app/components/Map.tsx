@@ -8,14 +8,14 @@ export default function MapComponent(props: { store: Store }) {
 	return (
 		<APIProvider apiKey={`${process.env.NEXT_PUBLIC_GOOGLE_MAPS}`}>
 			<Map
-				style={{ width: "100%", height: "40vh" }}
+				style={{ width: "100%", height: "30vh" }}
 				defaultCenter={{
 					lat: store.contacts.position!.latitude,
 					lng: store.contacts.position!.longitude,
 				}}
 				defaultZoom={14}
 				gestureHandling={"greedy"}
-				mapId={"kjdskfjs"}
+				mapId={store.id}
 			>
 				<AdvancedMarker
 					position={{

@@ -1,13 +1,23 @@
 /* eslint-disable @next/next/no-img-element */
 import localFont from "next/font/local";
 import React from "react";
-import { Store } from "../app.interface";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { Item, Store } from "../app.interface";
 import db from "../firebase/clientApp";
 import SearchBar from "../components/SearchBar";
 import MapComponent from "../components/Map";
 import FolderComponent from "../components/Folder";
-
+import {
+	collection,
+	query,
+	where,
+	limit,
+	getDocs,
+	doc,
+	getDoc,
+	DocumentSnapshot,
+	DocumentData,
+} from "firebase/firestore";
+import ItemComponent from "../components/Item";
 type Params = Promise<{ storeID: string }>;
 const gabaritoFont = localFont({
 	src: "../fonts/Gabarito-VariableFont_wght.ttf",
@@ -37,6 +47,48 @@ export default async function page(props: { params: Params }) {
 		id: doc.id,
 	}));
 	const store = stores[0];
+	const items: Item[] = [];
+	const itemsPromise: Promise<DocumentSnapshot<DocumentData>>[] = [];
+	const count: number = 16;
+
+	const loadItems = async (store: Store) => {
+		console.log(store);
+		if (store.featuredItems && store.featuredItems?.length > 0) {
+			for (let i = 0; i < store.featuredItems.length; i++) {
+				itemsPromise.push(getDoc(doc(db, `items/${store.featuredItems[i]}`)));
+			}
+		}
+
+		if (store.id) {
+			console.log(count);
+			const collectionRef = collection(db, "items");
+			const collectionQuery = query(
+				collectionRef,
+				where("public", "==", true),
+				where("storeID", "==", store.id),
+				limit(count)
+			);
+			const collectionSnapShot = await getDocs(collectionQuery);
+			const itemsHolder = collectionSnapShot.docs.map((doc) => ({
+				id: doc.id,
+				...(doc.data() as Item),
+			}));
+			itemsHolder.forEach((item) => {
+				items.push(item);
+			});
+		}
+		const itemsSnapshot = await Promise.all(itemsPromise);
+		const itemsHolder = itemsSnapshot.map((doc) => ({
+			id: doc.id,
+			...(doc.data() as Item),
+		}));
+		itemsHolder.forEach((item) => {
+			items.push(item);
+		});
+	};
+
+	await loadItems(store);
+
 	return (
 		<div className={`background ms:p-2 md:p-4 ${gabaritoFont.className}`}>
 			<div className="relative">
@@ -105,6 +157,9 @@ export default async function page(props: { params: Params }) {
 							<div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 p-4">
 								{store.folders?.map((folder, index) => {
 									return <FolderComponent key={index} folder={folder} />;
+								})}
+								{items?.map((item, index) => {
+									return <ItemComponent key={index} item={item} />;
 								})}
 							</div>
 						</div>
