@@ -85,7 +85,7 @@ body {
 	width: 20px;
 	position: absolute;
 	background-color: #3e2d44;
-	bottom: -3px;
+	bottom: -0.3rem;
 	z-index: -1;
 	left: 45%;
 	transform: rotate(225deg);

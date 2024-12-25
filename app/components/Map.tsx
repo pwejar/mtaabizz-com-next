@@ -23,8 +23,8 @@ export default function MapComponent(props: { store: Store }) {
 						lng: store.contacts.position!.longitude,
 					}}
 				>
-					<div className="rounded triangle  h-full pwejar  ">
-						<div className="p-1">
+					<div className="h-full  p-2 ">
+						<div className="p-1 pwejar rounded triangle">
 							<img
 								src={
 									store.logo
