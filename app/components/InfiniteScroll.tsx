@@ -65,6 +65,7 @@ export default function InfiniteScroll(props: { store: Store }) {
 			{items?.map((item, index) => {
 				return <ItemComponent key={index} item={item} />;
 			})}
+			{itemFetching && <p>Loading...</p>}
 		</>
 	);
 }

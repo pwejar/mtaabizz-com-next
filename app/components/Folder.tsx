@@ -5,7 +5,7 @@ export default function FolderComponent(props: { folder: Folder }) {
 	const folder = props.folder;
 	return (
 		<div className="p-2">
-			<div className="pt-4 pr-4 pl-4">
+			<div className="pt-4  cursor-pointer">
 				<svg viewBox="0 0 72 48" fill="none" xmlns="http://www.w3.org/2000/svg">
 					<path
 						id="Vector"
@@ -16,7 +16,7 @@ export default function FolderComponent(props: { folder: Folder }) {
 					/>
 				</svg>
 			</div>
-			<div className="folderText">
+			<div className="text-center">
 				<p>
 					<b className="textExtraSmall">{folder.name}</b>
 				</p>

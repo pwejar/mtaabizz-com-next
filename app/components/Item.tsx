@@ -15,7 +15,7 @@ const withImage = (item: Item) => {
 				alt="Shoes"
 			/>
 			<div className="absolute w-full top-0 translucent ">
-				<p className="textExtraSmall text-yellow-300 opacity-100 pb-4 [text-shadow:_0px_-1px_1px_#000000]">
+				<p className="textExtraSmall text-center text-yellow-300 opacity-100 pb-4 [text-shadow:_0px_-1px_1px_#000000]">
 					{item.name.length > 16
 						? `${item.name.substring(0, 16)}...`
 						: item.name}
@@ -37,7 +37,7 @@ export default function ItemComponent(props: { item: Item }) {
 	const item = props.item;
 	return (
 		<div className="p-2">
-			<div className="card rounded-md overflow-hidden pwejar  shadow-xl">
+			<div className="card cursor-pointer rounded-md overflow-hidden pwejar  shadow-xl">
 				<figure className=" relative rounded">
 					<img src="frame.svg" alt="" />
 					{item.photos[0] ? withImage(item) : withoutImage(item)}

@@ -34,6 +34,11 @@ export async function generateMetadata(props: { params: Params }) {
 		id: doc.id,
 	}));
 	const store = stores[0];
+	if (!store) {
+		return {
+			title: "Store not found",
+		};
+	}
 	return {
 		title: store.name + " | online store",
 	};
@@ -88,62 +93,64 @@ export default async function page(props: { params: Params }) {
 		});
 	};
 
-	await loadItems(store);
+	if (store) {
+		await loadItems(store);
+		return (
+			<div className={`${gabaritoFont.className}`}>
+				<header className="">
+					<div className="navbar bg-base-100">
+						<div className="flex-1">
+							<img
+								src={
+									store.logo
+										? store.logo.small
+										: "/mtaabizz_icon_monochrome.svg"
+								}
+								className="max-h-8"
+								alt="Store Lofo"
+							/>
+							<p className=" px-4">{store.name}</p>
+							<SearchBar></SearchBar>
+						</div>
 
-	return (
-		<div className={`${gabaritoFont.className}`}>
-			<header className="">
-				<div className="navbar bg-base-100">
-					<div className="flex-1">
-						<img
-							src={
-								store.logo ? store.logo.small : "/mtaabizz_icon_monochrome.svg"
-							}
-							className="max-h-8"
-							alt="Store Lofo"
-						/>
-						<p className=" px-4">{store.name}</p>
-						<SearchBar></SearchBar>
+						<div className="flex-none">
+							<ul className="menu menu-horizontal px-1">
+								<li>
+									<a>Link</a>
+								</li>
+								<li>
+									<details>
+										<summary>Parent</summary>
+										<ul className="bg-base-100 rounded-t-none p-2">
+											<li>
+												<a>Link 1</a>
+											</li>
+											<li>
+												<a>Link 2</a>
+											</li>
+										</ul>
+									</details>
+								</li>
+							</ul>
+						</div>
 					</div>
-
-					<div className="flex-none">
-						<ul className="menu menu-horizontal px-1">
-							<li>
-								<a>Link</a>
-							</li>
-							<li>
-								<details>
-									<summary>Parent</summary>
-									<ul className="bg-base-100 rounded-t-none p-2">
-										<li>
-											<a>Link 1</a>
-										</li>
-										<li>
-											<a>Link 2</a>
-										</li>
-									</ul>
-								</details>
-							</li>
-						</ul>
+					<div className="pwejar w-full p-3 text-center text-slate-300">
+						<h1 className="capitalize">
+							Welcome to <span className="text-yellow-500">{store.name}</span>{" "}
+							online 🤗
+						</h1>
 					</div>
-				</div>
-				<div className="pwejar w-full p-3 text-center text-slate-300">
-					<h1 className="capitalize">
-						Welcome to <span className="text-yellow-500">{store.name}</span>{" "}
-						online 🤗
-					</h1>
-				</div>
-			</header>
-			<main className="sm:grid sm:grid-cols-[25%_75%] bg-slate-300 min-h-screen">
-				<div className="">
-					<div className="mapHolder">
-						{store.contacts.position && (
-							<MapComponent store={store}></MapComponent>
-						)}
+				</header>
+				<main className="sm:grid sm:grid-cols-[25%_75%] bg-slate-300 min-h-screen">
+					<div className="">
+						<div className="mapHolder">
+							{store.contacts.position && (
+								<MapComponent store={store}></MapComponent>
+							)}
+						</div>
 					</div>
-				</div>
-				<div>
-					{/* <div className="w-full">
+					<div>
+						{/* <div className="w-full">
 								<p>Featured Items</p>
 							</div>
 							<div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 p-4">
@@ -151,17 +158,24 @@ export default async function page(props: { params: Params }) {
 									return <FolderComponent key={index} folder={folder} />;
 								})}
 							</div> */}
-					<div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 p-4">
-						{store.folders?.map((folder, index) => {
-							return <FolderComponent key={index} folder={folder} />;
-						})}
-						{items?.map((item, index) => {
-							return <ItemComponent key={index} item={item} />;
-						})}
-						<InfiniteScroll store={store}></InfiniteScroll>
+						<div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 p-4">
+							{store.folders?.map((folder, index) => {
+								return <FolderComponent key={index} folder={folder} />;
+							})}
+							{items?.map((item, index) => {
+								return <ItemComponent key={index} item={item} />;
+							})}
+							<InfiniteScroll store={store}></InfiniteScroll>
+						</div>
 					</div>
-				</div>
-			</main>
-		</div>
-	);
+				</main>
+			</div>
+		);
+	} else {
+		return (
+			<div>
+				<h1>Error 404</h1>
+			</div>
+		);
+	}
 }
