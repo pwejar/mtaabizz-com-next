@@ -1,24 +1,13 @@
 /* eslint-disable @next/next/no-img-element */
 import localFont from "next/font/local";
 import React from "react";
-import { Item, Store } from "../app.interface";
+import { Store } from "../app.interface";
 import db from "../firebase/clientApp";
 import SearchBar from "../components/SearchBar";
-import MapComponent from "../components/Map";
-import FolderComponent from "../components/Folder";
-import {
-	collection,
-	query,
-	where,
-	limit,
-	getDocs,
-	doc,
-	getDoc,
-	DocumentSnapshot,
-	DocumentData,
-} from "firebase/firestore";
-import ItemComponent from "../components/Item";
-import InfiniteScroll from "../components/InfiniteScroll";
+
+import { collection, query, where, getDocs } from "firebase/firestore";
+
+import MainComponent from "./Main";
 type Params = Promise<{ storeID: string }>;
 const gabaritoFont = localFont({
 	src: "../fonts/Gabarito-VariableFont_wght.ttf",
@@ -53,48 +42,8 @@ export default async function page(props: { params: Params }) {
 		id: doc.id,
 	}));
 	const store = stores[0];
-	const items: Item[] = [];
-	const itemsPromise: Promise<DocumentSnapshot<DocumentData>>[] = [];
-	const count: number = 16;
-
-	const loadItems = async (store: Store) => {
-		console.log(store);
-		if (store.featuredItems && store.featuredItems?.length > 0) {
-			for (let i = 0; i < store.featuredItems.length; i++) {
-				itemsPromise.push(getDoc(doc(db, `items/${store.featuredItems[i]}`)));
-			}
-		}
-
-		if (store.id) {
-			console.log(count);
-			const collectionRef = collection(db, "items");
-			const collectionQuery = query(
-				collectionRef,
-				where("public", "==", true),
-				where("storeID", "==", store.id),
-				limit(count)
-			);
-			const collectionSnapShot = await getDocs(collectionQuery);
-			const itemsHolder = collectionSnapShot.docs.map((doc) => ({
-				id: doc.id,
-				...(doc.data() as Item),
-			}));
-			itemsHolder.forEach((item) => {
-				items.push(item);
-			});
-		}
-		const itemsSnapshot = await Promise.all(itemsPromise);
-		const itemsHolder = itemsSnapshot.map((doc) => ({
-			id: doc.id,
-			...(doc.data() as Item),
-		}));
-		itemsHolder.forEach((item) => {
-			items.push(item);
-		});
-	};
 
 	if (store) {
-		await loadItems(store);
 		return (
 			<div className={`${gabaritoFont.className}`}>
 				<header className="">
@@ -107,7 +56,7 @@ export default async function page(props: { params: Params }) {
 										: "/mtaabizz_icon_monochrome.svg"
 								}
 								className="max-h-8"
-								alt="Store Lofo"
+								alt="Store Logo"
 							/>
 							<p className=" px-4">{store.name}</p>
 							<SearchBar></SearchBar>
@@ -141,34 +90,7 @@ export default async function page(props: { params: Params }) {
 						</h1>
 					</div>
 				</header>
-				<main className="sm:grid sm:grid-cols-[25%_75%] bg-slate-300 min-h-screen">
-					<div className="">
-						<div className="mapHolder">
-							{store.contacts.position && (
-								<MapComponent store={store}></MapComponent>
-							)}
-						</div>
-					</div>
-					<div>
-						{/* <div className="w-full">
-								<p>Featured Items</p>
-							</div>
-							<div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 p-4">
-								{store.folders?.map((folder, index) => {
-									return <FolderComponent key={index} folder={folder} />;
-								})}
-							</div> */}
-						<div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 p-4">
-							{store.folders?.map((folder, index) => {
-								return <FolderComponent key={index} folder={folder} />;
-							})}
-							{items?.map((item, index) => {
-								return <ItemComponent key={index} item={item} />;
-							})}
-							<InfiniteScroll store={store}></InfiniteScroll>
-						</div>
-					</div>
-				</main>
+				<MainComponent store={store}></MainComponent>
 			</div>
 		);
 	} else {
