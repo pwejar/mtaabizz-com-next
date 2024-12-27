@@ -15,6 +15,7 @@ import {
 	limit,
 	getDocs,
 } from "firebase/firestore";
+import Image from "next/image";
 import db from "../firebase/clientApp";
 import { useEffect, useState } from "react";
 import { debounce } from "lodash";
@@ -66,11 +67,9 @@ export default function MainComponent(props: { store: Store }) {
 			id: doc.id,
 			...(doc.data() as Item),
 		}));
-		console.log(itemsHolder);
-		console.log(itemsHolder);
+
 		setItems(itemsHolder);
 		setItemFetching(false);
-		count += 16;
 	};
 	const handleScroll = () => {
 		console.log(
@@ -139,11 +138,33 @@ export default function MainComponent(props: { store: Store }) {
 		};
 	}, []);
 
+	const goUpFolder = () => {
+		const lastSlashIndex = folderName.lastIndexOf("/");
+		if (lastSlashIndex !== -1) {
+			const newFolderName = folderName.substring(0, lastSlashIndex);
+			setFolderName(newFolderName);
+			setFolderDisplayName((previous) => {
+				const lastArrowIndex = previous.lastIndexOf(">");
+				return previous.substring(0, lastArrowIndex);
+			});
+			const parentFolder = store.folders.find(
+				(folder) => folder.name === newFolderName.split("/").pop()
+			);
+			if (parentFolder) {
+				setFolders(parentFolder.subFolders);
+			} else {
+				setFolders(store.folders);
+			}
+			count = 16;
+			loadItemsInFolder();
+		}
+	};
+
 	const openFolder = (folder: Folder, index: number) => {
 		console.log(folder, index);
 		displayFoldersIndexArray.push(index);
 		setFolderName((previous) => `${previous}/${folder.name}`);
-		setFolderDisplayName((previous) => `${previous}/${folder.name}`);
+		setFolderDisplayName((previous) => `${previous}>${folder.name}`);
 		setFolders(folder.subFolders);
 		count = 16;
 		loadItemsInFolder();
@@ -167,8 +188,20 @@ export default function MainComponent(props: { store: Store }) {
 								})}
 							</div> */}
 				<div>
-					<div>
-						<h1 className="text-2xl text-center p-4">{folderDisplayName}</h1>
+					<div className="relative w-full text-center ">
+						<p className="p-4 text-center ">Items{folderDisplayName}</p>
+						{folderName && (
+							<Image
+								src="/arrow-back-outline.svg"
+								alt="Back Icon"
+								width={24}
+								height={24}
+								className="cursor-pointer absolute right-4 top-4"
+								onClick={() => {
+									goUpFolder();
+								}}
+							/>
+						)}
 					</div>
 					<div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 p-4">
 						{folders?.map((folder, index) => {
