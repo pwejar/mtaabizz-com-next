@@ -4,7 +4,6 @@ import { Folder, Item, Store } from "../app.interface";
 import MapComponent from "../components/Map";
 import FolderComponent from "../components/Folder";
 import ItemComponent from "../components/Item";
-import InfiniteScroll from "../components/InfiniteScroll";
 import {
 	DocumentSnapshot,
 	DocumentData,
@@ -18,6 +17,7 @@ import {
 } from "firebase/firestore";
 import db from "../firebase/clientApp";
 import { useEffect, useState } from "react";
+import { debounce } from "lodash";
 
 export default function MainComponent(props: { store: Store }) {
 	const { store } = props;
@@ -28,11 +28,11 @@ export default function MainComponent(props: { store: Store }) {
 	const displayFoldersIndexArray: number[] = [];
 	const [folderDisplayName, setFolderDisplayName] = useState("");
 
-	const count: number = 16;
+	let count: number = 16;
 	const [itemFetching, setItemFetching] = useState(false);
 
 	const loadItems = async (store: Store) => {
-		console.log(store);
+		setItemFetching(true);
 		if (store.featuredItems && store.featuredItems?.length > 0) {
 			for (let i = 0; i < store.featuredItems.length; i++) {
 				itemsPromise.push(getDoc(doc(db, `items/${store.featuredItems[i]}`)));
@@ -45,20 +45,7 @@ export default function MainComponent(props: { store: Store }) {
 		}));
 		setItems((prevItems) => [...prevItems, ...itemsHolder!]);
 		if (store.id) {
-			console.log(count);
-			const collectionRef = collection(db, "items");
-			const collectionQuery = query(
-				collectionRef,
-				where("public", "==", true),
-				where("storeID", "==", store.id),
-				limit(count)
-			);
-			const collectionSnapShot = await getDocs(collectionQuery);
-			const newItems = collectionSnapShot.docs.map((doc) => ({
-				id: doc.id,
-				...(doc.data() as Item),
-			}));
-			setItems((prevItems) => [...prevItems, ...newItems!]);
+			loadMoreItems(store);
 		}
 	};
 	const loadItemsInFolder = async () => {
@@ -83,16 +70,74 @@ export default function MainComponent(props: { store: Store }) {
 		console.log(itemsHolder);
 		setItems(itemsHolder);
 		setItemFetching(false);
+		count += 16;
 	};
-	// set it inside a useEffect
-	useEffect(() => {
-		loadItems(store);
-	}, []);
+	const handleScroll = () => {
+		console.log(
+			"Scrolling",
+			window.innerHeight,
+			document.documentElement.scrollTop,
+			document.documentElement.offsetHeight
+		);
+		//detect when user scrolls to bottom
+		if (
+			window.innerHeight + document.documentElement.scrollTop >
+			document.documentElement.offsetHeight - 30
+		) {
+			if (!itemFetching) {
+				if (folderName) {
+					loadItemsInFolder();
+				} else {
+					loadMoreItems(store);
+				}
+			}
+		}
+	};
+	const loadMoreItems = async (store: Store) => {
+		setItemFetching(true);
+		const collectionRef = collection(db, "items");
+		const collectionQuery = query(
+			collectionRef,
+			where("public", "==", true),
+			where("storeID", "==", store.id),
+			limit(count)
+		);
+		const collectionSnapShot = await getDocs(collectionQuery);
+		// Check if item already exists in items before adding
+		console.log(items, "more items");
+
+		const newItems = collectionSnapShot.docs.map((doc) => ({
+			id: doc.id,
+			...(doc.data() as Item),
+		}));
+
+		setItems((prevItems) => {
+			const existingItemIds = new Set(prevItems.map((item) => item.id));
+
+			const filteredNewItems = newItems.filter(
+				(item) => !existingItemIds.has(item.id)
+			);
+			return [...prevItems, ...filteredNewItems!];
+		});
+		count += 68;
+		console.log(items);
+		setItemFetching(false);
+	};
 	useEffect(() => {
 		if (folderName) {
 			loadItemsInFolder();
+		} else {
+			loadItems(store);
 		}
 	}, [folderName]);
+	useEffect(() => {
+		console.log("InfiniteScroll");
+		const handleDebouncedScroll = debounce(() => handleScroll(), 200);
+		window.addEventListener("scroll", handleDebouncedScroll);
+		return () => {
+			window.removeEventListener("scroll", handleScroll);
+		};
+	}, []);
 
 	const openFolder = (folder: Folder, index: number) => {
 		console.log(folder, index);
@@ -100,6 +145,7 @@ export default function MainComponent(props: { store: Store }) {
 		setFolderName((previous) => `${previous}/${folder.name}`);
 		setFolderDisplayName((previous) => `${previous}/${folder.name}`);
 		setFolders(folder.subFolders);
+		count = 16;
 		loadItemsInFolder();
 	};
 	return (
@@ -136,7 +182,6 @@ export default function MainComponent(props: { store: Store }) {
 							return <ItemComponent key={index} item={item} />;
 						})}
 						{itemFetching && <p>Loading...</p>}
-						<InfiniteScroll store={store}></InfiniteScroll>
 					</div>
 				</div>
 			</div>
