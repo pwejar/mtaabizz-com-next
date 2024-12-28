@@ -19,10 +19,13 @@ import Image from "next/image";
 import db from "../firebase/clientApp";
 import { useEffect, useState } from "react";
 import { debounce } from "lodash";
-
+import { motion } from "framer-motion";
+interface ItemWithAnimationDelay extends Item {
+	animationDelay: number;
+}
 export default function MainComponent(props: { store: Store }) {
 	const { store } = props;
-	const [items, setItems] = useState<Item[]>([]);
+	const [items, setItems] = useState<ItemWithAnimationDelay[]>([]);
 	const [folders, setFolders] = useState<Folder[]>(store.folders);
 	const itemsPromise: Promise<DocumentSnapshot<DocumentData>>[] = [];
 	const [folderName, setFolderName] = useState("");
@@ -40,9 +43,10 @@ export default function MainComponent(props: { store: Store }) {
 			}
 		}
 		const itemsSnapshot = await Promise.all(itemsPromise);
-		const itemsHolder = itemsSnapshot.map((doc) => ({
+		const itemsHolder = itemsSnapshot.map((doc, index) => ({
 			id: doc.id,
 			...(doc.data() as Item),
+			animationDelay: index * 0.05,
 		}));
 		setItems((prevItems) => [...prevItems, ...itemsHolder!]);
 		if (store.id) {
@@ -63,12 +67,14 @@ export default function MainComponent(props: { store: Store }) {
 			limit(count)
 		);
 		const collectionSnapShot = await getDocs(collectionQuery);
-		const itemsHolder = collectionSnapShot.docs.map((doc) => ({
+		const itemsHolder = collectionSnapShot.docs.map((doc, index) => ({
 			id: doc.id,
 			...(doc.data() as Item),
+			animationDelay: index * 0.05,
 		}));
 
 		setItems(itemsHolder);
+		count += 24;
 		setItemFetching(false);
 	};
 	const handleScroll = () => {
@@ -102,23 +108,20 @@ export default function MainComponent(props: { store: Store }) {
 			limit(count)
 		);
 		const collectionSnapShot = await getDocs(collectionQuery);
-		// Check if item already exists in items before adding
-		console.log(items, "more items");
-
-		const newItems = collectionSnapShot.docs.map((doc) => ({
+		const newItems = collectionSnapShot.docs.map((doc, index) => ({
 			id: doc.id,
 			...(doc.data() as Item),
+			animationDelay: index * 0.05,
 		}));
 
 		setItems((prevItems) => {
 			const existingItemIds = new Set(prevItems.map((item) => item.id));
-
 			const filteredNewItems = newItems.filter(
 				(item) => !existingItemIds.has(item.id)
 			);
 			return [...prevItems, ...filteredNewItems!];
 		});
-		count += 68;
+		count += 24;
 		console.log(items);
 		setItemFetching(false);
 	};
@@ -212,7 +215,20 @@ export default function MainComponent(props: { store: Store }) {
 							);
 						})}
 						{items?.map((item, index) => {
-							return <ItemComponent key={index} item={item} />;
+							return (
+								<motion.div
+									key={item.id}
+									initial={{ opacity: 0, y: 0, x: 200 }}
+									animate={{ opacity: 1, y: 0, x: 0 }}
+									transition={{
+										duration: 0.5,
+										ease: [0.25, 0.25, 0, 1],
+										delay: item.animationDelay,
+									}}
+								>
+									{<ItemComponent key={index} item={item} />}
+								</motion.div>
+							);
 						})}
 						{itemFetching && <p>Loading...</p>}
 					</div>
