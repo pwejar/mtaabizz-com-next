@@ -3,10 +3,9 @@ import db from "@/app/firebase/clientApp";
 import { doc, getDoc } from "firebase/firestore";
 import Image from "next/image";
 import Add from "./Add";
+import { Params } from "next/dist/server/request/params";
 
-export default async function page(props: {
-	params: { storeID: string; itemID: string };
-}) {
+export default async function page(props: { params: Params }) {
 	const { itemID } = await props.params;
 	const itemSnap = await getDoc(doc(db, `items/${itemID}`));
 	const item = itemSnap.data() as Item;
