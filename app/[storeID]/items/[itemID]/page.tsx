@@ -5,8 +5,8 @@ import Image from "next/image";
 import Add from "./Add";
 import { Params } from "next/dist/server/request/params";
 
-export default async function page(props: { params: Params }) {
-	const { itemID } = await props.params;
+export default async function page({ params }: { params: Params }) {
+	const { itemID } = params;
 	const itemSnap = await getDoc(doc(db, `items/${itemID}`));
 	const item = itemSnap.data() as Item;
 	return (
