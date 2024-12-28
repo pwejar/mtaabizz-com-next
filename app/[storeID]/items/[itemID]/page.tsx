@@ -5,11 +5,24 @@ import Image from "next/image";
 import Add from "./Add";
 
 type Params = Promise<{ itemID: string }>;
-
+export async function generateMetadata(props: { params: Params }) {
+	const { itemID } = await props.params;
+	const itemSnap = await getDoc(doc(db, `items/${itemID}`));
+	const item = itemSnap.data() as Item;
+	if (!item) {
+		return {
+			title: "Store not found",
+		};
+	}
+	return {
+		title: item.name + " | buy locally",
+	};
+}
 export default async function page(props: { params: Params }) {
 	const { itemID } = await props.params;
 	const itemSnap = await getDoc(doc(db, `items/${itemID}`));
 	const item = itemSnap.data() as Item;
+
 	return (
 		<div className="sm:grid sm:grid-cols-2 p-4">
 			<div className="p-4">
@@ -25,6 +38,7 @@ export default async function page(props: { params: Params }) {
 				</div>
 				<div className="flex justify-center mt-4 w-full">
 					{item.photos &&
+						item.photos.length > 1 &&
 						item.photos.map((photo, index) => (
 							<div key={photo.compressed! + index} className="flex-1 p-2">
 								<Image

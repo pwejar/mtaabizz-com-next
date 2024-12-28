@@ -29,8 +29,6 @@ export default function MainComponent(props: {
 	params?: Params;
 }) {
 	const { store } = props;
-	const param = props.params;
-	const folderIndex = param?.folder;
 	const [items, setItems] = useState<ItemWithAnimationDelay[]>([]);
 	const [folders, setFolders] = useState<Folder[]>(store.folders);
 	const itemsPromise: Promise<DocumentSnapshot<DocumentData>>[] = [];
@@ -189,9 +187,7 @@ export default function MainComponent(props: {
 							</div> */}
 			<div>
 				<div className="relative w-full text-center ">
-					<p className="p-4 text-center ">
-						Items{folderDisplayName} index:{folderIndex}
-					</p>
+					<p className="p-4 text-center ">Items{folderDisplayName}</p>
 					{folderName && (
 						<Image
 							src="/arrow-back-outline.svg"
@@ -205,7 +201,7 @@ export default function MainComponent(props: {
 						/>
 					)}
 				</div>
-				<div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 p-4">
+				<div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 sm:p-4">
 					{folders?.map((folder, index) => {
 						return (
 							<div key={index} onClick={() => openFolder(folder, index)}>

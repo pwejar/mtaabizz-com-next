@@ -29,7 +29,7 @@ const Layout = async (props: { params: Params } & LayoutProps) => {
 	const store = stores[0];
 	return (
 		<div className={`${gabaritoFont.className}`}>
-			<header className="">
+			<header className="hidden sm:block">
 				<div className="navbar bg-base-100">
 					<div className="flex-1">
 						<Image
@@ -72,8 +72,8 @@ const Layout = async (props: { params: Params } & LayoutProps) => {
 					</h1>
 				</div>
 			</header>
-			<div className="sm:grid sm:grid-cols-[25%_75%] bg-slate-300 min-h-screen">
-				<main className="">
+			<div className=" sm:grid sm:grid-cols-[25%_75%] bg-slate-300 min-h-screen">
+				<main className="hidden sm:block">
 					<div className="mapHolder">
 						{store.contacts.position && (
 							<MapComponent store={store}></MapComponent>
@@ -82,8 +82,33 @@ const Layout = async (props: { params: Params } & LayoutProps) => {
 				</main>
 				<main>{children}</main>
 			</div>
-			<footer>
-				<p>&copy; 2023 My Store</p>
+			<footer className="bg-base-100 text-center p-4 sticky bottom-0 sm:hidden">
+				<div className="btm-nav">
+					<button className="text-success">
+						<Image
+							src="/cart-outline.svg"
+							alt="Cart Outline"
+							width={24}
+							height={24}
+						/>
+					</button>
+					<button className="text-success active">
+						<Image
+							src="/call-outline.svg"
+							alt="Cart Outline"
+							width={24}
+							height={24}
+						/>
+					</button>
+					<button className="text-success">
+						<Image
+							src="/storefront-outline.svg"
+							alt="Cart Outline"
+							width={24}
+							height={24}
+						/>
+					</button>
+				</div>
 			</footer>
 		</div>
 	);
