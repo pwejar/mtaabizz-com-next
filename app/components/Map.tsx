@@ -13,7 +13,7 @@ export default function MapComponent(props: { store: Store }) {
 					lat: store.contacts.position!.latitude,
 					lng: store.contacts.position!.longitude,
 				}}
-				defaultZoom={14}
+				defaultZoom={13}
 				gestureHandling={"greedy"}
 				mapId={store.id}
 			>
@@ -24,17 +24,13 @@ export default function MapComponent(props: { store: Store }) {
 					}}
 				>
 					<div className="h-full  p-2 ">
-						<div className="p-1 pwejar rounded triangle">
+						<div className="p-1 bg-[#3e2d44] bg-opacity-90 rounded triangle">
 							<img
-								src={
-									store.logo
-										? store.logo.small
-										: "/mtaabizz_icon_monochrome.svg"
-								}
+								src={store.logo ? store.logo.small : "/mtaabizz icon.svg"}
 								alt="store logo"
 								className="max-w-6 max-h-6 m-auto"
 							/>
-							<div className="triangle p-1 text-yellow-500 justify-items-center m-auto">
+							<div className="triangle p-1 text-yellow-400 justify-items-center m-auto">
 								<p>
 									<strong className="textExtraSmall ">{store.name}</strong>
 								</p>

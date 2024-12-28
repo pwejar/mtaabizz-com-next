@@ -15,7 +15,7 @@ const gabaritoFont = localFont({
 	variable: "--font-geist-mono",
 });
 const Layout = async (props: { params: { storeID: string } } & LayoutProps) => {
-	const { storeID } = props.params;
+	const { storeID } = await props.params;
 	const { children } = props;
 	const querySnapshot = await getDocs(
 		query(collection(db, "stores"), where("userName", "==", storeID))

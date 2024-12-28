@@ -20,11 +20,17 @@ import { useEffect, useState } from "react";
 import { debounce } from "lodash";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { Params } from "next/dist/server/request/params";
 interface ItemWithAnimationDelay extends Item {
 	animationDelay: number;
 }
-export default function MainComponent(props: { store: Store }) {
+export default function MainComponent(props: {
+	store: Store;
+	params?: Params;
+}) {
 	const { store } = props;
+	const param = props.params;
+	const folderIndex = param?.folder;
 	const [items, setItems] = useState<ItemWithAnimationDelay[]>([]);
 	const [folders, setFolders] = useState<Folder[]>(store.folders);
 	const itemsPromise: Promise<DocumentSnapshot<DocumentData>>[] = [];
@@ -48,7 +54,13 @@ export default function MainComponent(props: { store: Store }) {
 			...(doc.data() as Item),
 			animationDelay: index * 0.05,
 		}));
-		setItems((prevItems) => [...prevItems, ...itemsHolder!]);
+		setItems((prevItems) => {
+			const existingItemIds = new Set(prevItems.map((item) => item.id));
+			const filteredNewItems = itemsHolder.filter(
+				(item) => !existingItemIds.has(item.id)
+			);
+			return [...prevItems, ...filteredNewItems!];
+		});
 		if (store.id) {
 			loadMoreItems(store);
 		}
@@ -151,7 +163,7 @@ export default function MainComponent(props: { store: Store }) {
 			} else {
 				setFolders(store.folders);
 			}
-			count = 16;
+			count = 24;
 			loadItemsInFolder();
 		}
 	};
@@ -162,7 +174,7 @@ export default function MainComponent(props: { store: Store }) {
 		setFolderName((previous) => `${previous}/${folder.name}`);
 		setFolderDisplayName((previous) => `${previous}>${folder.name}`);
 		setFolders(folder.subFolders);
-		count = 16;
+		count = 24;
 		loadItemsInFolder();
 	};
 	return (
@@ -177,7 +189,9 @@ export default function MainComponent(props: { store: Store }) {
 							</div> */}
 			<div>
 				<div className="relative w-full text-center ">
-					<p className="p-4 text-center ">Items{folderDisplayName}</p>
+					<p className="p-4 text-center ">
+						Items{folderDisplayName} index:{folderIndex}
+					</p>
 					{folderName && (
 						<Image
 							src="/arrow-back-outline.svg"
@@ -202,7 +216,7 @@ export default function MainComponent(props: { store: Store }) {
 					{items?.map((item, index) => {
 						return (
 							<motion.div
-								key={item.id}
+								key={item.id! + index}
 								initial={{ opacity: 0, y: 0, x: 200 }}
 								animate={{ opacity: 1, y: 0, x: 0 }}
 								transition={{
@@ -211,7 +225,7 @@ export default function MainComponent(props: { store: Store }) {
 									delay: item.animationDelay,
 								}}
 							>
-								<Link href={`/${store.userName}/item/${item.id}`}>
+								<Link href={`/${store.userName}/items/${item.id}`}>
 									{<ItemComponent key={index} item={item} />}
 								</Link>
 							</motion.div>

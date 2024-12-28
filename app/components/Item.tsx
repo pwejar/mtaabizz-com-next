@@ -39,7 +39,7 @@ export default function ItemComponent(props: { item: Item }) {
 		<div className="p-2">
 			<div className="card cursor-pointer rounded-md overflow-hidden pwejar  shadow-xl">
 				<figure className=" relative rounded">
-					<img src="frame.svg" alt="" />
+					<img src="/frame.svg" alt="" />
 					{item.photos[0] ? withImage(item) : withoutImage(item)}
 				</figure>
 

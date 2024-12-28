@@ -1,14 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
 import React from "react";
-import { Store } from "../app.interface";
-import db from "../firebase/clientApp";
 
 import { collection, query, where, getDocs } from "firebase/firestore";
+import { Store } from "@/app/app.interface";
+import db from "@/app/firebase/clientApp";
+import MainComponent from "../Main";
 
-import FolderComponent from "../components/Folder";
-import Link from "next/link";
-
-type Params = Promise<{ storeID: string }>;
+type Params = Promise<{ storeID: string; folderIndex: string }>;
 
 export async function generateMetadata(props: { params: Params }) {
 	const { storeID } = await props.params;
@@ -30,7 +28,9 @@ export async function generateMetadata(props: { params: Params }) {
 	};
 }
 export default async function page(props: { params: Params }) {
-	const { storeID } = await props.params;
+	const { storeID, folderIndex } = await props.params;
+
+	console.log(folderIndex, storeID);
 	const querySnapshot = await getDocs(
 		query(collection(db, "stores"), where("userName", "==", storeID))
 	);
@@ -43,22 +43,7 @@ export default async function page(props: { params: Params }) {
 	if (store) {
 		return (
 			<div>
-				<div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 p-4">
-					{store.folders?.map((folder, index) => {
-						return (
-							<div key={index}>
-								<Link
-									href={{
-										pathname: `/${store.userName}/items`,
-										query: { folderIndex: index },
-									}}
-								>
-									<FolderComponent folder={folder} />
-								</Link>
-							</div>
-						);
-					})}
-				</div>
+				<MainComponent store={store}></MainComponent>
 			</div>
 		);
 	} else {
