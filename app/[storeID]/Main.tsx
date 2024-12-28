@@ -1,7 +1,6 @@
 "use client";
 
 import { Folder, Item, Store } from "../app.interface";
-import MapComponent from "../components/Map";
 import FolderComponent from "../components/Folder";
 import ItemComponent from "../components/Item";
 import {
@@ -20,6 +19,7 @@ import db from "../firebase/clientApp";
 import { useEffect, useState } from "react";
 import { debounce } from "lodash";
 import { motion } from "framer-motion";
+import Link from "next/link";
 interface ItemWithAnimationDelay extends Item {
 	animationDelay: number;
 }
@@ -78,13 +78,6 @@ export default function MainComponent(props: { store: Store }) {
 		setItemFetching(false);
 	};
 	const handleScroll = () => {
-		console.log(
-			"Scrolling",
-			window.innerHeight,
-			document.documentElement.scrollTop,
-			document.documentElement.offsetHeight
-		);
-		//detect when user scrolls to bottom
 		if (
 			window.innerHeight + document.documentElement.scrollTop >
 			document.documentElement.offsetHeight - 30
@@ -173,16 +166,8 @@ export default function MainComponent(props: { store: Store }) {
 		loadItemsInFolder();
 	};
 	return (
-		<main className="sm:grid sm:grid-cols-[25%_75%] bg-slate-300 min-h-screen">
-			<div className="">
-				<div className="mapHolder">
-					{store.contacts.position && (
-						<MapComponent store={store}></MapComponent>
-					)}
-				</div>
-			</div>
-			<div>
-				{/* <div className="w-full">
+		<div>
+			{/* <div className="w-full">
 								<p>Featured Items</p>
 							</div>
 							<div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 p-4">
@@ -190,50 +175,51 @@ export default function MainComponent(props: { store: Store }) {
 									return <FolderComponent key={index} folder={folder} />;
 								})}
 							</div> */}
-				<div>
-					<div className="relative w-full text-center ">
-						<p className="p-4 text-center ">Items{folderDisplayName}</p>
-						{folderName && (
-							<Image
-								src="/arrow-back-outline.svg"
-								alt="Back Icon"
-								width={24}
-								height={24}
-								className="cursor-pointer absolute right-4 top-4"
-								onClick={() => {
-									goUpFolder();
+			<div>
+				<div className="relative w-full text-center ">
+					<p className="p-4 text-center ">Items{folderDisplayName}</p>
+					{folderName && (
+						<Image
+							src="/arrow-back-outline.svg"
+							alt="Back Icon"
+							width={24}
+							height={24}
+							className="cursor-pointer absolute right-4 top-4"
+							onClick={() => {
+								goUpFolder();
+							}}
+						/>
+					)}
+				</div>
+				<div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 p-4">
+					{folders?.map((folder, index) => {
+						return (
+							<div key={index} onClick={() => openFolder(folder, index)}>
+								<FolderComponent folder={folder} />
+							</div>
+						);
+					})}
+					{items?.map((item, index) => {
+						return (
+							<motion.div
+								key={item.id}
+								initial={{ opacity: 0, y: 0, x: 200 }}
+								animate={{ opacity: 1, y: 0, x: 0 }}
+								transition={{
+									duration: 0.5,
+									ease: [0.25, 0.25, 0, 1],
+									delay: item.animationDelay,
 								}}
-							/>
-						)}
-					</div>
-					<div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 p-4">
-						{folders?.map((folder, index) => {
-							return (
-								<div key={index} onClick={() => openFolder(folder, index)}>
-									<FolderComponent folder={folder} />
-								</div>
-							);
-						})}
-						{items?.map((item, index) => {
-							return (
-								<motion.div
-									key={item.id}
-									initial={{ opacity: 0, y: 0, x: 200 }}
-									animate={{ opacity: 1, y: 0, x: 0 }}
-									transition={{
-										duration: 0.5,
-										ease: [0.25, 0.25, 0, 1],
-										delay: item.animationDelay,
-									}}
-								>
+							>
+								<Link href={`/${store.userName}/item/${item.id}`}>
 									{<ItemComponent key={index} item={item} />}
-								</motion.div>
-							);
-						})}
-						{itemFetching && <p>Loading...</p>}
-					</div>
+								</Link>
+							</motion.div>
+						);
+					})}
+					{itemFetching && <p>Loading...</p>}
 				</div>
 			</div>
-		</main>
+		</div>
 	);
 }
