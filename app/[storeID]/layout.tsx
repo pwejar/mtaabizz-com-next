@@ -10,11 +10,13 @@ import MapComponent from "../components/Map";
 interface LayoutProps {
 	children: ReactNode;
 }
+type Params = Promise<{ storeID: string; folderIndex: string }>;
+
 const gabaritoFont = localFont({
 	src: "../fonts/Gabarito-VariableFont_wght.ttf",
 	variable: "--font-geist-mono",
 });
-const Layout = async (props: { params: { storeID: string } } & LayoutProps) => {
+const Layout = async (props: { params: Params } & LayoutProps) => {
 	const { storeID } = await props.params;
 	const { children } = props;
 	const querySnapshot = await getDocs(
